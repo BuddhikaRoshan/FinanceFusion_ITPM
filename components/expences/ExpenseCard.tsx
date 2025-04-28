@@ -7,7 +7,7 @@ import { useState } from "react";
 interface ExpenseCardProps {
   expense: Expense;
   onEdit: (expense: Expense) => void;
-  onDelete: (id: string) => void;
+  onDelete: (id: string) => Promise<void>; // ✅ Updated: onDelete returns Promise<void>
 }
 
 export const ExpenseCard = ({
@@ -22,10 +22,9 @@ export const ExpenseCard = ({
       "Are you sure you want to delete this expense?"
     );
     if (!confirmDelete) return;
-
     try {
       setIsDeleting(true);
-      await onDelete(expense.id);
+      await onDelete(expense.id); // ✅ Properly awaiting async function
     } finally {
       setIsDeleting(false);
     }
@@ -37,7 +36,7 @@ export const ExpenseCard = ({
       ? expense.amount.toFixed(2)
       : expense.amount;
 
-  // Make sure date is properly formatted
+  // Format date
   const formattedDate =
     expense.date instanceof Date
       ? expense.date.toLocaleDateString()
@@ -59,7 +58,9 @@ export const ExpenseCard = ({
             {expense.category}
           </span>
         </div>
+
         <p className="text-sm text-gray-400">{formattedDate}</p>
+
         {expense.reason && (
           <p className="text-sm text-gray-300 italic">{expense.reason}</p>
         )}
@@ -72,6 +73,7 @@ export const ExpenseCard = ({
             <Edit className="mr-2 h-4 w-4" />
             Edit
           </Button>
+
           <Button
             onClick={handleDelete}
             disabled={isDeleting}
