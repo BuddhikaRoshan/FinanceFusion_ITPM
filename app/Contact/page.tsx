@@ -11,16 +11,11 @@ const ContactUs = () => {
     phone: "",
     subject: "",
     message: "",
-    subscribe: false,
     file: null,
   });
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleCheckboxChange = () => {
-    setFormData({ ...formData, subscribe: !formData.subscribe });
   };
 
   const handleFileChange = (e) => {
@@ -29,7 +24,6 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle form submission (you can integrate with an API here)
     console.log("Form submitted:", formData);
     alert("Thank you for contacting us! We'll get back to you soon.");
   };
@@ -37,8 +31,9 @@ const ContactUs = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <Navbar />
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -53,7 +48,7 @@ const ContactUs = () => {
           </p>
         </motion.div>
 
-        {/* Contact Form Section */}
+        {/* Contact Form */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -61,13 +56,9 @@ const ContactUs = () => {
           className="max-w-2xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg"
         >
           <form onSubmit={handleSubmit}>
-            {/* Form Fields */}
-            {/* Name Field */}
+            {/* Name */}
             <div className="mb-4">
-              <label
-                htmlFor="name"
-                className="block text-lg font-semibold text-gray-300"
-              >
+              <label htmlFor="name" className="block text-lg font-semibold text-gray-300">
                 Full Name
               </label>
               <input
@@ -82,12 +73,9 @@ const ContactUs = () => {
               />
             </div>
 
-            {/* Email Field */}
+            {/* Email */}
             <div className="mb-4">
-              <label
-                htmlFor="email"
-                className="block text-lg font-semibold text-gray-300"
-              >
+              <label htmlFor="email" className="block text-lg font-semibold text-gray-300">
                 Email Address
               </label>
               <input
@@ -102,12 +90,25 @@ const ContactUs = () => {
               />
             </div>
 
-            {/* Subject Dropdown */}
+            {/* Phone */}
             <div className="mb-4">
-              <label
-                htmlFor="subject"
-                className="block text-lg font-semibold text-gray-300"
-              >
+              <label htmlFor="phone" className="block text-lg font-semibold text-gray-300">
+                Phone Number
+              </label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                className="w-full p-3 mt-2 border border-gray-600 rounded-md bg-gray-700 text-gray-300"
+                placeholder="Enter your phone number"
+              />
+            </div>
+
+            {/* Subject */}
+            <div className="mb-4">
+              <label htmlFor="subject" className="block text-lg font-semibold text-gray-300">
                 Subject
               </label>
               <select
@@ -125,12 +126,9 @@ const ContactUs = () => {
               </select>
             </div>
 
-            {/* Message Field */}
+            {/* Message */}
             <div className="mb-4">
-              <label
-                htmlFor="message"
-                className="block text-lg font-semibold text-gray-300"
-              >
+              <label htmlFor="message" className="block text-lg font-semibold text-gray-300">
                 Message
               </label>
               <textarea
@@ -145,17 +143,31 @@ const ContactUs = () => {
               />
             </div>
 
+            {/* File Upload */}
+            <div className="mb-6">
+              <label htmlFor="file" className="block text-lg font-semibold text-gray-300">
+                Attachment (Optional)
+              </label>
+              <input
+                type="file"
+                id="file"
+                name="file"
+                onChange={handleFileChange}
+                className="w-full p-2 mt-2 text-gray-300"
+              />
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-md hover:bg-gradient-to-l"
+              className="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-semibold rounded-md hover:bg-gradient-to-l transition-all"
             >
               Submit
             </button>
           </form>
         </motion.div>
 
-        {/* Company Details Section */}
+        {/* Company Contact Details */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -166,7 +178,6 @@ const ContactUs = () => {
             Our Contact Details
           </h2>
 
-          {/* Contact Information */}
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-gray-300">Contact Email:</h3>
             <p className="text-gray-400">support@financefusion.com</p>
@@ -178,7 +189,6 @@ const ContactUs = () => {
             <p className="text-gray-400">+94 987-654-321</p>
           </div>
 
-          {/* Founder Message */}
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-gray-300">Founder Message:</h3>
             <p className="text-gray-400 italic">
@@ -186,7 +196,6 @@ const ContactUs = () => {
             </p>
           </div>
 
-          {/* Team Message */}
           <div className="mb-6">
             <h3 className="text-xl font-semibold text-gray-300">Our Team:</h3>
             <p className="text-gray-400 italic">
@@ -194,8 +203,8 @@ const ContactUs = () => {
             </p>
           </div>
         </motion.div>
-      </div>
 
+      </div>
       <Footer />
     </div>
   );
