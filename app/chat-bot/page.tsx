@@ -75,7 +75,7 @@ const ChatbotPage = () => {
     {
       role: "assistant",
       content:
-        "Hello! I'm FinanceFusion, an AI assistant powered by OpenAI. How can I help you with your finances today?",
+        "Hello! I'm FinanceFusion, an AI assistant powered by OpenAI. How can I help you with your finances today? I'll provide all financial values in LKR (Sri Lankan Rupees).",
     },
   ]);
   const [input, setInput] = useState<string>("");
@@ -185,7 +185,8 @@ const ChatbotPage = () => {
                 The user's financial data:
                 Incomes: ${JSON.stringify(incomes)}
                 Expenses: ${JSON.stringify(expenses)}
-                Provide concise, actionable advice based on their financial situation.`,
+                Provide concise, actionable advice based on their financial situation.
+                IMPORTANT: Always display currency values in LKR (Sri Lankan Rupees) format, not in USD ($). For example, use "LKR 1000" instead of "$1000".`,
               },
               ...messages,
               userMessage,
