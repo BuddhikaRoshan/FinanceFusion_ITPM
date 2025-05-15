@@ -21,6 +21,7 @@ import { motion } from "framer-motion";
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  rememberMe: z.boolean().default(false),
 });
 
 const LoginPage = () => {
@@ -32,6 +33,7 @@ const LoginPage = () => {
     defaultValues: {
       email: "",
       password: "",
+      rememberMe: false,
     },
   });
 
@@ -120,6 +122,31 @@ const LoginPage = () => {
                     </FormItem>
                   )}
                 />
+                <div className="flex items-center justify-between mt-2">
+                  <FormField
+                    control={form.control}
+                    name="rememberMe"
+                    render={({ field }) => (
+                      <FormItem className="flex items-center space-x-2">
+                        <FormControl>
+                          <input
+                            type="checkbox"
+                            checked={field.value}
+                            onChange={field.onChange}
+                            className="h-4 w-4 rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                          />
+                        </FormControl>
+                        <FormLabel className="text-sm text-gray-300">Remember me</FormLabel>
+                      </FormItem>
+                    )}
+                  />
+                  <a
+                    href="/reset-password"
+                    className="text-sm text-blue-400 hover:text-blue-300 hover:underline transition-colors"
+                  >
+                    Forgot password?
+                  </a>
+                </div>
               </motion.div>
 
               <motion.div
