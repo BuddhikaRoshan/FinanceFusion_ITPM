@@ -251,7 +251,7 @@ const SpecialPaymentPage = () => {
     // ===== TABLE =====
     const headers = [["Amount", "Date", "Reason"]];
     const data = filteredPayments.map((payment) => [
-      `$${payment.paidAmount.toFixed(2)}`,
+      `LKR ${payment.paidAmount.toFixed(2)}`,
       format(new Date(payment.paidDate), "PPP"),
       payment.reason || "-",
     ]);
@@ -325,191 +325,305 @@ const SpecialPaymentPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 via-gray-900 to-black text-white">
+    <div className="min-h-screen bg-gray-800">
       <Navbar />
       <Toaster richColors position="top-right" />
-      <div className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Special Payments</h1>
-          <div className="flex gap-4">
-            <Button
-              onClick={generatePDF}
-              variant="outline"
-              className="border-gray-700 hover:bg-gray-700/50 text-black"
-            >
-              Generate PDF
-            </Button>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button onClick={() => setIsDialogOpen(true)}>
-                  Add Payment
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-gray-800 border-gray-700">
-                <DialogHeader>
-                  <DialogTitle className="text-white">
-                    {isEditMode ? "Edit Payment" : "Add New Payment"}
-                  </DialogTitle>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label
-                      htmlFor="paidAmount"
-                      className="text-right text-white"
+      <div className="container mx-auto px-4 py-8 max-w-7xl">
+        {/* Stats Overview Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-blue-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-300">Total Payments</p>
+                <h3 className="text-2xl font-bold text-white mt-1">
+                  LKR {payments.reduce((sum, p) => sum + p.paidAmount, 0).toFixed(2)}
+                </h3>
+              </div>
+              <div className="p-3 bg-blue-900/30 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-emerald-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-300">This Month</p>
+                <h3 className="text-2xl font-bold text-white mt-1">
+                  LKR {payments
+                    .filter(p => new Date(p.paidDate).getMonth() === new Date().getMonth())
+                    .reduce((sum, p) => sum + p.paidAmount, 0)
+                    .toFixed(2)}
+                </h3>
+              </div>
+              <div className="p-3 bg-emerald-900/30 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-violet-500">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-300">Payment Streak</p>
+                <h3 className="text-2xl font-bold text-white mt-1">
+                  {payments.length} Payments
+                </h3>
+              </div>
+              <div className="p-3 bg-violet-900/30 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Card */}
+        <div className="bg-gray-800 rounded-xl shadow-lg p-6 mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+            <div>
+              <h1 className="text-3xl font-bold text-indigo-200">Special Payments</h1>
+              <p className="text-gray-400 mt-1">Track and manage your special financial transactions</p>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                onClick={generatePDF}
+                variant="outline"
+                className="bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-300 hover:text-gray-200 transition-colors duration-200"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Export Report
+              </Button>
+              <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-indigo-100 transition-colors duration-200 shadow-md hover:shadow-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                    </svg>
+                    New Payment
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-gray-800 border-gray-700">
+                  <DialogHeader>
+                    <DialogTitle className="text-xl font-semibold text-indigo-200">
+                      {isEditMode ? "Edit Payment" : "Create New Payment"}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="grid gap-6 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="paidAmount" className="text-sm font-medium text-gray-400">
+                        Payment Amount
+                      </Label>
+                      <Input
+                        id="paidAmount"
+                        name="paidAmount"
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={currentPayment.paidAmount || ""}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-700/50 border-gray-600 text-indigo-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                        placeholder="Enter payment amount"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="paidDate" className="text-sm font-medium text-gray-400">
+                        Payment Date
+                      </Label>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"outline"}
+                            className={cn(
+                              "w-full justify-start text-left font-normal bg-gray-700/50 border-gray-600 text-indigo-100 hover:bg-gray-700 transition-colors duration-200",
+                              !currentPayment.paidDate && "text-gray-500"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {currentPayment.paidDate ? (
+                              format(currentPayment.paidDate, "PPP")
+                            ) : (
+                              <span>Select payment date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 bg-gray-800 border-gray-700">
+                          <Calendar
+                            mode="single"
+                            selected={currentPayment.paidDate}
+                            onSelect={(date) =>
+                              setCurrentPayment((prev) => ({
+                                ...prev,
+                                paidDate: date || new Date(),
+                              }))
+                            }
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="reason" className="text-sm font-medium text-gray-400">
+                        Payment Description
+                      </Label>
+                      <Input
+                        id="reason"
+                        name="reason"
+                        value={currentPayment.reason || ""}
+                        onChange={handleInputChange}
+                        className="w-full bg-gray-700/50 border-gray-600 text-indigo-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+                        placeholder="Describe the purpose of this payment"
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter className="gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsDialogOpen(false);
+                        resetForm();
+                      }}
+                      className="bg-gray-700 border-gray-600 hover:bg-gray-600 text-gray-300 hover:text-gray-200 transition-colors duration-200"
                     >
-                      Amount
-                    </Label>
-                    <Input
-                      id="paidAmount"
-                      name="paidAmount"
-                      type="number"
-                      min="0.01"
-                      step="0.01"
-                      value={currentPayment.paidAmount || ""}
-                      onChange={handleInputChange}
-                      className="col-span-3 text-white"
-                    />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="paidDate" className="text-right text-white">
-                      Date
-                    </Label>
-                    <Popover>
-                      <PopoverTrigger asChild>
+                      Cancel
+                    </Button>
+                    <Button 
+                      type="button" 
+                      onClick={handleSubmit}
+                      className="bg-indigo-600 hover:bg-indigo-700 text-indigo-100 transition-colors duration-200 shadow-md hover:shadow-lg"
+                    >
+                      {isEditMode ? "Update Payment" : "Create Payment"}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
+
+          <div className="mb-6">
+            <div className="relative">
+              <Input
+                placeholder="Search payments by amount, date, or description..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full max-w-md bg-gray-700/50 border-gray-600 text-indigo-100 pl-10 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-colors duration-200"
+              />
+              <svg
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-500"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+
+          {isLoading ? (
+            <div className="flex justify-center items-center h-64">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+            </div>
+          ) : filteredPayments.length === 0 ? (
+            <div className="text-center py-12 bg-gray-700/50 rounded-lg">
+              <svg
+                className="mx-auto h-12 w-12 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <h3 className="mt-2 text-sm font-medium text-indigo-200">No payments yet</h3>
+              <p className="mt-1 text-sm text-gray-400">
+                {searchTerm
+                  ? "No matching payments found"
+                  : "Create your first special payment to get started"}
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filteredPayments.map((payment) => (
+                <div
+                  key={payment.id}
+                  className="bg-gray-700/50 rounded-lg p-4 hover:bg-gray-700/70 transition-colors duration-200"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 bg-indigo-900/30 rounded-lg">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="font-medium text-indigo-200">
+                            LKR {payment.paidAmount.toFixed(2)}
+                          </h3>
+                          <p className="text-sm text-gray-400">
+                            {payment.reason || "No description"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-sm text-gray-400">
+                          Payment Date
+                        </p>
+                        <p className="text-sm font-medium text-indigo-200">
+                          {format(new Date(payment.paidDate), "MMM d, yyyy")}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
                         <Button
-                          variant={"outline"}
-                          className={cn(
-                            "col-span-3 justify-start text-left font-normal",
-                            !currentPayment.paidDate && "text-muted-foreground"
-                          )}
+                          size="sm"
+                          variant="outline"
+                          className="bg-gray-700/50 border-gray-600 hover:bg-gray-600 text-gray-300 hover:text-gray-200 transition-colors duration-200 flex items-center gap-1.5"
+                          onClick={() => openEditDialog(payment)}
                         >
-                          <CalendarIcon className="mr-2 h-4 w-4" />
-                          {currentPayment.paidDate ? (
-                            format(currentPayment.paidDate, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                          Edit
                         </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0">
-                        <Calendar
-                          mode="single"
-                          selected={currentPayment.paidDate}
-                          onSelect={(date) =>
-                            setCurrentPayment((prev) => ({
-                              ...prev,
-                              paidDate: date || new Date(),
-                            }))
-                          }
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="reason" className="text-right text-white">
-                      Reason
-                    </Label>
-                    <Input
-                      id="reason"
-                      name="reason"
-                      value={currentPayment.reason || ""}
-                      onChange={handleInputChange}
-                      className="col-span-3 text-white"
-                    />
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="bg-red-500/10 hover:bg-red-500/20 text-red-400 hover:text-red-300 border border-red-500/20 transition-colors duration-200 flex items-center gap-1.5"
+                          onClick={() => handleDelete(payment.id)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setIsDialogOpen(false);
-                      resetForm();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="button" onClick={handleSubmit}>
-                    {isEditMode ? "Update" : "Save"}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
+              ))}
+            </div>
+          )}
         </div>
-
-        <div className="mb-6">
-          <Input
-            placeholder="Search payments..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="max-w-md bg-gray-700 border-gray-600 text-white placeholder-gray-400"
-          />
-        </div>
-
-        {isLoading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
-          </div>
-        ) : filteredPayments.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-400">
-              {searchTerm
-                ? "No matching payments found"
-                : "No payments recorded yet"}
-            </p>
-          </div>
-        ) : (
-          <div className="rounded-md border border-gray-700">
-            <Table>
-              <TableHeader>
-                <TableRow className="hover:bg-transparent">
-                  <TableHead className="text-gray-300">Amount</TableHead>
-                  <TableHead className="text-gray-300">Date</TableHead>
-                  <TableHead className="text-gray-300">Reason</TableHead>
-                  <TableHead className="text-gray-300">Created</TableHead>
-                  <TableHead className="text-right text-gray-300">
-                    Actions
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredPayments.map((payment) => (
-                  <TableRow key={payment.id}>
-                    <TableCell className="font-medium">
-                      ${payment.paidAmount.toFixed(2)}
-                    </TableCell>
-                    <TableCell>
-                      {format(new Date(payment.paidDate), "PPP")}
-                    </TableCell>
-                    <TableCell>{payment.reason || "-"}</TableCell>
-                    <TableCell>
-                      {format(new Date(payment.createdAt), "PP")}
-                    </TableCell>
-                    <TableCell className="text-right space-x-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="border-gray-600 hover:bg-gray-700 text-black"
-                        onClick={() => openEditDialog(payment)}
-                      >
-                        Edit
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        onClick={() => handleDelete(payment.id)}
-                      >
-                        Delete
-                      </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        )}
       </div>
     </div>
   );
