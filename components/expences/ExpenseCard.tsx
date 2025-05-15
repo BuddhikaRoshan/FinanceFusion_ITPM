@@ -7,7 +7,7 @@ import { useState } from "react";
 interface ExpenseCardProps {
   expense: Expense;
   onEdit: (expense: Expense) => void;
-  onDelete: (id: string) => Promise<void>; // ✅ Updated: onDelete returns Promise<void>
+  onDelete: (id: string) => void;
 }
 
 export const ExpenseCard = ({
@@ -22,9 +22,10 @@ export const ExpenseCard = ({
       "Are you sure you want to delete this expense?"
     );
     if (!confirmDelete) return;
+
     try {
       setIsDeleting(true);
-      await onDelete(expense.id); // ✅ Properly awaiting async function
+      await onDelete(expense.id);
     } finally {
       setIsDeleting(false);
     }
@@ -36,7 +37,7 @@ export const ExpenseCard = ({
       ? expense.amount.toFixed(2)
       : expense.amount;
 
-  // Format date
+  // Make sure date is properly formatted
   const formattedDate =
     expense.date instanceof Date
       ? expense.date.toLocaleDateString()
@@ -51,16 +52,14 @@ export const ExpenseCard = ({
     >
       <div className="p-5 space-y-3">
         <div className="flex justify-between items-start">
-          <p className="font-bold text-2xl bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-            ${formattedAmount}
+          <p className="font-bold text-2xl bg-gradient-to-r from-red-500 to-pink-500 bg-clip-text text-transparent">
+            LKR {formattedAmount}
           </p>
           <span className="inline-block px-3 py-1 text-xs font-medium rounded-full bg-gray-700 text-gray-300">
             {expense.category}
           </span>
         </div>
-
         <p className="text-sm text-gray-400">{formattedDate}</p>
-
         {expense.reason && (
           <p className="text-sm text-gray-300 italic">{expense.reason}</p>
         )}
@@ -73,7 +72,6 @@ export const ExpenseCard = ({
             <Edit className="mr-2 h-4 w-4" />
             Edit
           </Button>
-
           <Button
             onClick={handleDelete}
             disabled={isDeleting}
