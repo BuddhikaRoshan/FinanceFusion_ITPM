@@ -140,7 +140,7 @@ export const ExpenseList = ({ initialExpenses, userId }: ExpenseListProps) => {
     doc.text(`Generated for: ${userName}`, 14, 55);
     doc.text(`Date: ${today}`, 14, 62);
     doc.text(
-      `Total Expenses: $${calculateTotal(filteredExpenses).toFixed(2)}`,
+      `Total Expenses: LKR ${calculateTotal(filteredExpenses).toFixed(2)}`,
       14,
       69
     );
@@ -153,7 +153,7 @@ export const ExpenseList = ({ initialExpenses, userId }: ExpenseListProps) => {
     // ===== TABLE =====
     autoTable(doc, {
       startY: 85,
-      head: [["Amount ($)", "Category", "Date", "Description"]],
+      head: [["Amount (LKR)", "Category", "Date", "Description"]],
       body: filteredExpenses.map((expense) => [
         expense.amount.toFixed(2),
         expense.category,
