@@ -47,6 +47,12 @@ const Navbar = () => {
                     Challenges
                   </Link>
                   <Link
+                    href="/leaderboard"
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                  >
+                    Leaderboard
+                  </Link>
+                  <Link
                     href="/special-payments"
                     className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:text-blue-600 hover:bg-blue-50 transition-colors"
                   >
